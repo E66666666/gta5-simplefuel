@@ -18,6 +18,7 @@
     <ClCompile Include="Memory\VehicleExtensions.cpp" />
     <ClCompile Include="script.cpp" />
     <ClCompile Include="Settings.cpp" />
+    <ClCompile Include="Util\Logger.cpp" />
     <ClCompile Include="Util\UIutils.cpp" />
     <ClCompile Include="Util\INIutils.cpp" />
     <ClCompile Include="Vect2.cpp" />
@@ -37,6 +38,7 @@
     <ClInclude Include="Settings.h" />
     <ClInclude Include="simpleFuelEnums.h" />
     <ClInclude Include="Util\INIutils.hpp" />
+    <ClInclude Include="Util\Logger.hpp" />
     <ClInclude Include="Util\UIutils.hpp" />
     <ClInclude Include="Util\Versions.h" />
     <ClInclude Include="Vect2.hpp" />

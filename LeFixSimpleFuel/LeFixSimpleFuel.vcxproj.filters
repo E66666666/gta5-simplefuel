@@ -33,6 +33,9 @@
     <ClCompile Include="Util\UIutils.cpp">
       <Filter>Util</Filter>
     </ClCompile>
+    <ClCompile Include="Util\Logger.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FuelStation.hpp" />
@@ -75,6 +78,9 @@
     </ClInclude>
     <ClInclude Include="..\..\GTAVMenuBase\thirdparty\simpleini\SimpleIni.h">
       <Filter>simpleini</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Logger.hpp">
+      <Filter>Util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

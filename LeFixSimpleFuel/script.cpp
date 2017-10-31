@@ -11,6 +11,8 @@
 #include <menu.h>
 
 #include <ctime> 
+#include "Util/Logger.hpp"
+#include "Util/Versions.h"
 
 NativeMenu::Menu menu;
 VehicleExtensions ext;
@@ -419,6 +421,11 @@ void onMenuExit() {
 
 void initialize()
 {
+    logger.SetFile(GetCurrentModulePath() + "LeFixSimpleFuel\\LeFixSimpleFuel.log");
+    logger.Clear();
+    logger.Write("LeFixSimpleFuel " + std::string(DISPLAY_VERSION));
+    logger.Write("Game version " + eGameVersionToString(getGameVersion()));
+    ext.GetOffsets();
 	srand((unsigned)time(0));
 
 	//Paths
@@ -725,7 +732,7 @@ void updateMenu()
 	if (menu.CurrentMenu("mainmenu"))
 	{
 		menu.Title("Simple Fuel");
-		menu.Subtitle("v1.1.2");
+		menu.Subtitle(DISPLAY_VERSION);
 		if (menu.BoolOption("Mod Enabled", Settings::isActive, { "Enable/Disable the entire mod." })) enableMod(Settings::isActive);
 		menu.FloatOption("Fuel Time", Settings::fuelTime, 0.1f, 20.0f, 0.1f, { "Time in minutes until tank capacity is consumed when consumption is at 100%. Visible at the bottom while menu is open." });
 		menu.MenuOption("Refueling", "refuelmenu");
