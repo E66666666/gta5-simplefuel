@@ -1,5 +1,6 @@
 #include "FuelStation.hpp"
-#include "Util\INIutils.hpp"
+#include "Util/INIutils.hpp"
+#include <inc/natives.h>
 
 std::string FuelStation::path = "";
 

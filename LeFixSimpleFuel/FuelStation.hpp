@@ -1,8 +1,7 @@
 #pragma once
 
 #include <string>
-#include "inc\types.h"
-#include "inc\natives.h"
+#include <inc/types.h>
 
 class FuelStation
 {

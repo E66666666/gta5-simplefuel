@@ -1,7 +1,7 @@
 #include "Settings.h"
 
-#include "inc/enums.h"
-#include "thirdparty/simpleini/SimpleIni.h"
+#include <thirdparty/simpleini/SimpleIni.h>
+#include "simpleFuelEnums.h"
 
 std::string Settings::_filepath;
 

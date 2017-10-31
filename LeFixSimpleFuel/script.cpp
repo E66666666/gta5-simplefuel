@@ -1,8 +1,8 @@
 #include "script.h"
 #include "Settings.h"
-#include "Util\UIutils.hpp"
-#include "Util\INIutils.hpp"
-#include "Memory\VehicleExtensions.hpp"
+#include "Util/UIutils.hpp"
+#include "Util/INIutils.hpp"
+#include "Memory/VehicleExtensions.hpp"
 #include "FuelStation.hpp"
 #include "simpleFuelEnums.h"
 

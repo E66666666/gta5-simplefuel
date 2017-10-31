@@ -1,10 +1,7 @@
 #pragma once
 #include <Windows.h>
 
-#include <inc\enums.h>
-#include "simpleFuelEnums.h"
-
-#include <vector>
+#include <inc/enums.h>
 #include <string>
 
 class Settings {
