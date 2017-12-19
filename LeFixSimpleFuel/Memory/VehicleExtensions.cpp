@@ -17,9 +17,9 @@ void VehicleExtensions::GetOffsets() {
     handlingOffset = *(int*)(addr + 0x16);
     logger.Writef("Handling Offset: 0x%X", handlingOffset);
 
-    addr = mem::FindPattern("\xF3\x44\x0F\x10\x93\x00\x00\x00\x00\xF3\x0F\x10\x0D",
-        "xxxxx????xxxx");
-    rpmOffset = *(int*)(addr + 5);
+    addr = mem::FindPattern("\x76\x03\x0F\x28\xF0\xF3\x44\x0F\x10\x93",
+        "xxxxxxxxxx");
+    rpmOffset = addr == 0 ? 0 : *(int*)(addr + 10);
     logger.Writef("RPM Offset: 0x%X", rpmOffset);
 
     addr = mem::FindPattern("\x74\x26\x0F\x57\xC9", "xxxxx");
