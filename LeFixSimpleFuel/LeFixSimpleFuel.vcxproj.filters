@@ -82,6 +82,9 @@
     <ClInclude Include="Util\Logger.hpp">
       <Filter>Util</Filter>
     </ClInclude>
+    <ClInclude Include="Memory\VehicleFlags.h">
+      <Filter>Memory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Memory">

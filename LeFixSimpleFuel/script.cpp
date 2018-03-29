@@ -13,6 +13,7 @@
 #include <ctime> 
 #include "Util/Logger.hpp"
 #include "Util/Versions.h"
+#include "Memory/VehicleFlags.h"
 
 NativeMenu::Menu menu;
 VehicleExtensions ext;
@@ -107,6 +108,16 @@ void toggleBlips()
 			station[n].setBlipVisible(visible);
 		}
 	}
+}
+
+int getCash(int character) 
+{
+    char statNameFull[32];
+    sprintf_s(statNameFull, "SP%d_TOTAL_CASH", lastMainCharacter);
+    Hash hash = GAMEPLAY::GET_HASH_KEY(statNameFull);
+    int val;
+    STATS::STAT_GET_INT(hash, &val, -1);
+    return val;
 }
 
 void addCash(int amount)
@@ -503,6 +514,7 @@ void update()
 		else
 		{
 			bool isRoadVehicle;
+            bool isElectric;
 			int vClass = VEHICLE::GET_VEHICLE_CLASS(playerVeh);
 			switch (vClass)
 			{
@@ -515,9 +527,12 @@ void update()
 			default: isRoadVehicle = true; break;
 			}
 
+            auto flags = ext.GetVehicleFlags(playerVeh);
+            isElectric = flags[1] & eVehicleFlag2::FLAG_IS_ELECTRIC;
+
 			tankCapacity = ext.GetPetrolTankVolume(playerVeh);
 			//Reference is valid but has vehicle a fuel tank?
-			if (!isRoadVehicle || tankCapacity <= 0.0f)
+			if (!isRoadVehicle || tankCapacity <= 0.0f || isElectric)
 			{
 				tankCapacity = -1.0f;
 				fuelBarLevel = -1.0f;

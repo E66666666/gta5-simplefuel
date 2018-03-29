@@ -3,6 +3,7 @@
 #include <cstdint>
 #include "../../../ScriptHookV_SDK/inc/types.h"
 #include "../../../ScriptHookV_SDK/inc/nativeCaller.h"
+#include <vector>
 
 class VehicleExtensions {
 public:
@@ -17,6 +18,7 @@ public:
     float GetThrottle(Vehicle handle);
     unsigned char GetTopGear(Vehicle handle);
     bool GetHandbrake(Vehicle handle);
+    std::vector<uint32_t> GetVehicleFlags(Vehicle handle);
 
     void GetOffsets();
 
@@ -30,4 +32,6 @@ private:
     int topGearOffset = 0;
     int throttleOffset = 0;
     int handbrakeOffset = 0;
+    const int vehicleModelInfoOffset = 0x020;
+    int vehicleFlagsOffset = 0;
 };

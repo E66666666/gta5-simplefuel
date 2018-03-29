@@ -34,6 +34,7 @@
     <ClInclude Include="Memory\NativeMemory.hpp" />
     <ClInclude Include="Memory\Offsets.hpp" />
     <ClInclude Include="Memory\VehicleExtensions.hpp" />
+    <ClInclude Include="Memory\VehicleFlags.h" />
     <ClInclude Include="script.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="simpleFuelEnums.h" />

@@ -2,6 +2,7 @@
 #include "NativeMemory.hpp"
 #include "Offsets.hpp"
 #include "../Util/Logger.hpp"
+#include <vector>
 
 VehicleExtensions::VehicleExtensions() {
     mem::init();
@@ -14,7 +15,7 @@ BYTE *VehicleExtensions::GetAddress(Vehicle handle) {
 void VehicleExtensions::GetOffsets() {
     auto addr = mem::FindPattern("\x3C\x03\x0F\x85\x00\x00\x00\x00\x48\x8B\x41\x20\x48\x8B\x88",
         "xxxx????xxxxxxx");
-    handlingOffset = *(int*)(addr + 0x16);
+    handlingOffset = addr == 0 ? 0 : *(int*)(addr + 0x16);
     logger.Writef("Handling Offset: 0x%X", handlingOffset);
 
     addr = mem::FindPattern("\x76\x03\x0F\x28\xF0\xF3\x44\x0F\x10\x93",
@@ -23,23 +24,28 @@ void VehicleExtensions::GetOffsets() {
     logger.Writef("RPM Offset: 0x%X", rpmOffset);
 
     addr = mem::FindPattern("\x74\x26\x0F\x57\xC9", "xxxxx");
-    fuelLevelOffset = *(int*)(addr + 8);
+    fuelLevelOffset = addr == 0 ? 0 : *(int*)(addr + 8);
     logger.Writef("Fuel Level Offset: 0x%X", fuelLevelOffset);
 
     addr = mem::FindPattern("\x48\x8D\x8F\x00\x00\x00\x00\x4C\x8B\xC3\xF3\x0F\x11\x7C\x24",
         "xxx????xxxxxxxx");
-    currentGearOffset = *(int*)(addr + 3) + 2;
+    currentGearOffset = addr == 0 ? 0 : *(int*)(addr + 3) + 2;
     logger.Writef("Current Gear Offset: 0x%X", currentGearOffset);
 
-    topGearOffset = *(int*)(addr + 3) + 6;
+    topGearOffset = addr == 0 ? 0 : *(int*)(addr + 3) + 6;
     logger.Writef("Top Gear Offset: 0x%X", topGearOffset);
 
-    throttleOffset = *(int*)(addr + 3) + 0x44;
+    throttleOffset = addr == 0 ? 0 : *(int*)(addr + 3) + 0x44;
     logger.Writef("Throttle Offset: 0x%X", throttleOffset);
 
-    addr = mem::FindPattern("\x44\x8A\xAA\x00\x00\x00\x00\x0F\x2F\xFB", "xxx????xxx");
-    handbrakeOffset = *(int*)(addr + 3);
+    addr = mem::FindPattern("\x44\x88\xA3\x00\x00\x00\x00\x45\x8A\xF4", "xxx????xxx");
+    handbrakeOffset = addr == 0 ? 0 : *(int*)(addr + 3);
     logger.Writef("Handbrake Offset: 0x%X", handbrakeOffset);
+
+    addr = mem::FindPattern("\x48\x85\xC0\x74\x3C\x8B\x80\x00\x00\x00\x00\xC1\xE8\x0F", "xxxxxxx????xxx");
+    vehicleFlagsOffset = addr == 0 ? 0 : *(int*)(addr + 7);
+    logger.Writef("VehicleFlags Offset: 0x%X", vehicleFlagsOffset);
+
 }
 
 float VehicleExtensions::GetCurrentRPM(Vehicle handle) {
@@ -93,4 +99,19 @@ bool VehicleExtensions::GetHandbrake(Vehicle handle) {
     auto address = GetAddress(handle);
 
     return address == nullptr ? false : *reinterpret_cast<bool*>(address + handbrakeOffset);
+}
+
+std::vector<uint32_t> VehicleExtensions::GetVehicleFlags(Vehicle handle) {
+    auto address = GetAddress(handle);
+
+    if (!address)
+        return std::vector<uint32_t>();
+
+    std::vector<uint32_t> offs(6);
+
+    auto pCVehicleModelInfo = *(uint64_t*)(address + vehicleModelInfoOffset);
+    for (uint8_t i = 0; i < 6; i++) {
+        offs[i] = *(uint32_t*)(pCVehicleModelInfo + vehicleFlagsOffset + sizeof(uint32_t) * i);
+    }
+    return offs;
 }
