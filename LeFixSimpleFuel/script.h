@@ -5,6 +5,6 @@
 #include <inc/enums.h>
 #include <inc/main.h>
 
-#define DISPLAY_VERSION "v1.1.5"
+#define DISPLAY_VERSION "v1.1.6"
 
 void ScriptMain();
