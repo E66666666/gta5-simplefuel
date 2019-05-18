@@ -526,12 +526,12 @@ void update()
 			default: isRoadVehicle = true; break;
 			}
 
-			auto flags = ext.GetVehicleFlags(playerVeh);
-			isElectric = flags[1] & eVehicleFlag2::FLAG_IS_ELECTRIC;
+			//auto flags = ext.GetVehicleFlags(playerVeh);
+			//isElectric = flags[1] & eVehicleFlag2::FLAG_IS_ELECTRIC;
 
 			tankCapacity = ext.GetPetrolTankVolume(playerVeh);
 			//Reference is valid but has vehicle a fuel tank?
-			if (!isRoadVehicle || tankCapacity <= 0.0f || isElectric)
+			if (!isRoadVehicle || tankCapacity <= 0.0f/* || isElectric*/)
 			{
 				tankCapacity = -1.0f;
 				fuelBarLevel = -1.0f;
