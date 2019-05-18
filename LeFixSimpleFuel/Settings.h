@@ -36,6 +36,7 @@ public:
 	static int refuelInputMode;
 
 	// Navigation
+	static int distCalcTime;
 	static int blipsVisibility;
 	static bool isRouteEnabled;
 

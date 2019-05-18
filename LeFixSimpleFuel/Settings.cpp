@@ -33,6 +33,7 @@ bool Settings::isRefuelingOnRepair = false;
 int Settings::refuelInputMode = RefuelInputOnce;
 
 // Navigation
+int Settings::distCalcTime = 5000;
 int Settings::blipsVisibility = BlipsAuto;
 bool Settings::isRouteEnabled = true;
 
@@ -72,6 +73,7 @@ void Settings::Save() {
 	settings.SetLongValue("REFUELING", "refuelInputMode", refuelInputMode);
 
 	// Navigation
+	settings.SetLongValue("NAVIGATION", "distCalcTime", distCalcTime);
 	settings.SetLongValue("NAVIGATION", "blipsVisibility", blipsVisibility);
 	settings.SetBoolValue("NAVIGATION", "isRouteEnabled", isRouteEnabled);
 
@@ -112,6 +114,7 @@ void Settings::Load() {
 	refuelInputMode = settings.GetLongValue("REFUELING", "refuelInputMode", RefuelInputOnce);
 
 	// Navigation
+	distCalcTime = settings.GetLongValue("NAVIGATION", "distCalcTime", 5000);
 	blipsVisibility = settings.GetLongValue("NAVIGATION", "blipsVisibility", BlipsAuto);
 	isRouteEnabled = settings.GetBoolValue("NAVIGATION", "isRouteEnabled", true);
 

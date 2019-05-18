@@ -18,9 +18,8 @@
 NativeMenu::Menu menu;
 VehicleExtensions ext;
 
-DWORD lastUpdate = 0;	//Timestamp of last update
-DWORD timePassed = 1;	//In Milliseconds
 DWORD nextAudioSignal = 0xFFFFFFFF;
+DWORD nextDistCheck = 0;
 
 Player player;				//Reference to current player
 Ped playerPed;				//Reference to current ped
@@ -112,12 +111,12 @@ void toggleBlips()
 
 int getCash(int character) 
 {
-    char statNameFull[32];
-    sprintf_s(statNameFull, "SP%d_TOTAL_CASH", lastMainCharacter);
-    Hash hash = GAMEPLAY::GET_HASH_KEY(statNameFull);
-    int val;
-    STATS::STAT_GET_INT(hash, &val, -1);
-    return val;
+	char statNameFull[32];
+	sprintf_s(statNameFull, "SP%d_TOTAL_CASH", lastMainCharacter);
+	Hash hash = GAMEPLAY::GET_HASH_KEY(statNameFull);
+	int val;
+	STATS::STAT_GET_INT(hash, &val, -1);
+	return val;
 }
 
 void addCash(int amount)
@@ -432,11 +431,11 @@ void onMenuExit() {
 
 void initialize()
 {
-    logger.SetFile(GetCurrentModulePath() + "LeFixSimpleFuel\\LeFixSimpleFuel.log");
-    logger.Clear();
-    logger.Write("LeFixSimpleFuel " + std::string(DISPLAY_VERSION));
-    logger.Write("Game version " + eGameVersionToString(getGameVersion()));
-    ext.GetOffsets();
+	logger.SetFile(GetCurrentModulePath() + "LeFixSimpleFuel\\LeFixSimpleFuel.log");
+	logger.Clear();
+	logger.Write("LeFixSimpleFuel " + std::string(DISPLAY_VERSION));
+	logger.Write("Game version " + eGameVersionToString(getGameVersion()));
+	ext.GetOffsets();
 	srand((unsigned)time(0));
 
 	//Paths
@@ -514,7 +513,7 @@ void update()
 		else
 		{
 			bool isRoadVehicle;
-            bool isElectric;
+			bool isElectric;
 			int vClass = VEHICLE::GET_VEHICLE_CLASS(playerVeh);
 			switch (vClass)
 			{
@@ -527,8 +526,8 @@ void update()
 			default: isRoadVehicle = true; break;
 			}
 
-            auto flags = ext.GetVehicleFlags(playerVeh);
-            isElectric = flags[1] & eVehicleFlag2::FLAG_IS_ELECTRIC;
+			auto flags = ext.GetVehicleFlags(playerVeh);
+			isElectric = flags[1] & eVehicleFlag2::FLAG_IS_ELECTRIC;
 
 			tankCapacity = ext.GetPetrolTankVolume(playerVeh);
 			//Reference is valid but has vehicle a fuel tank?
@@ -666,21 +665,23 @@ void updateRare()
 				}
 
 				//Fuel Station
-				int currentNearest = getNearStationPath(5000);
-				if (nearestRefuel != currentNearest)
-				{
-					//naechstgelegene Station hat sich geändert
-					if (nearestRefuel != -1)
+				if (GetTickCount() > nextDistCheck) {
+					nextDistCheck = GetTickCount() + Settings::distCalcTime;
+					int currentNearest = getNearStationPath(5000);
+					if (nearestRefuel != currentNearest)
 					{
-						station[nearestRefuel].setNearest(false, false); //alt
-						station[nearestRefuel].setBlipVisible(Settings::blipsVisibility == BlipsOn);
+						//naechstgelegene Station hat sich geändert
+						if (nearestRefuel != -1)
+						{
+							station[nearestRefuel].setNearest(false, false); //alt
+							station[nearestRefuel].setBlipVisible(Settings::blipsVisibility == BlipsOn);
+						}
+						nearestRefuel = currentNearest;
+						if (currentNearest != -1)
+						{
+							station[nearestRefuel].setNearest(true, Settings::isRouteEnabled); //neu
+						}
 					}
-					nearestRefuel = currentNearest;
-					if (currentNearest != -1)
-					{
-						station[nearestRefuel].setNearest(true, Settings::isRouteEnabled); //neu
-					}
-
 				}
 			}
 		}
@@ -697,8 +698,11 @@ void updateRare()
 			//Low Fuel Notification
 			if (VEHICLE::GET_IS_VEHICLE_ENGINE_RUNNING(playerVeh) && Settings::isLowFuelNoteEnabled) replaceNotification(handleNoteEmpty, &noteCrit[0u]);
 			//Fuel Station
-			nearestRefuel = getNearStationPath(5000);
-			if (nearestRefuel != -1) station[nearestRefuel].setNearest(true, Settings::isRouteEnabled);
+			if (GetTickCount() > nextDistCheck) {
+				nextDistCheck = GetTickCount() + Settings::distCalcTime;
+				nearestRefuel = getNearStationPath(5000);
+				if (nearestRefuel != -1) station[nearestRefuel].setNearest(true, Settings::isRouteEnabled);
+			}
 		}
 		//Grenzwert immer noch nicht unterschritten
 		else
@@ -772,6 +776,7 @@ void updateMenu()
 	{
 		menu.Title("Simple Fuel");
 		menu.Subtitle("Navigation");
+		menu.IntOption("Shortest Route update frequency", Settings::distCalcTime, 1000, 60000, 200, { "In milliseconds. Set it higher if you experience performance problems." });
 		if (menu.BoolOption("Shortest Route", Settings::isRouteEnabled, { "This will show the route to the nearest gas station when fuel level is critical. It doesn't interfere with existing waypoints." }))
 		{
 			if (nearestRefuel > -1) station[nearestRefuel].setNearest(true, Settings::isRouteEnabled);
