@@ -23,6 +23,9 @@ void VehicleExtensions::GetOffsets() {
     rpmOffset = addr == 0 ? 0 : *(int*)(addr + 10);
     logger.Writef("RPM Offset: 0x%X", rpmOffset);
 
+    throttleOffset = addr == 0 ? 0 : *(int*)(addr + 10) + 0x10;
+    logger.Writef("Throttle Offset: 0x%X", throttleOffset);
+
     addr = mem::FindPattern("\x74\x26\x0F\x57\xC9", "xxxxx");
     fuelLevelOffset = addr == 0 ? 0 : *(int*)(addr + 8);
     logger.Writef("Fuel Level Offset: 0x%X", fuelLevelOffset);
@@ -34,9 +37,6 @@ void VehicleExtensions::GetOffsets() {
 
     topGearOffset = addr == 0 ? 0 : *(int*)(addr + 3) + 6;
     logger.Writef("Top Gear Offset: 0x%X", topGearOffset);
-
-    throttleOffset = addr == 0 ? 0 : *(int*)(addr + 3) + 0x44;
-    logger.Writef("Throttle Offset: 0x%X", throttleOffset);
 
     addr = mem::FindPattern("\x44\x88\xA3\x00\x00\x00\x00\x45\x8A\xF4", "xxx????xxx");
     handbrakeOffset = addr == 0 ? 0 : *(int*)(addr + 3);
