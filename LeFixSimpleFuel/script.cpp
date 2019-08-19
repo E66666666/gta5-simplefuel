@@ -453,6 +453,7 @@ void initialize()
 	menu.RegisterOnMain(std::bind(onMenuEnter));
 	menu.RegisterOnExit(std::bind(onMenuExit));
 	menu.ReadSettings();
+    menu.Initialize();
 
 	//Notes
 	noteFull = readString(path_settings_language, "NOTIFICATIONS", "noteFull", "Refueled tank.");
